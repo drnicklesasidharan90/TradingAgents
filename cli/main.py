@@ -53,6 +53,7 @@ class MessageBuffer:
     # Analyst name mapping
     ANALYST_MAPPING = {
         "market": "Market Analyst",
+        "chart": "Chart Analyst",
         "social": "Social Analyst",
         "news": "News Analyst",
         "fundamentals": "Fundamentals Analyst",
@@ -63,6 +64,7 @@ class MessageBuffer:
     # finalizing_agent: which agent must be "completed" for this report to count as done
     REPORT_SECTIONS = {
         "market_report": ("market", "Market Analyst"),
+        "chart_report": ("chart", "Chart Analyst"),
         "sentiment_report": ("social", "Social Analyst"),
         "news_report": ("news", "News Analyst"),
         "fundamentals_report": ("fundamentals", "Fundamentals Analyst"),
@@ -171,6 +173,7 @@ class MessageBuffer:
             # Format the current section for display
             section_titles = {
                 "market_report": "Market Analysis",
+                "chart_report": "Chart Analysis",
                 "sentiment_report": "Social Sentiment",
                 "news_report": "News Analysis",
                 "fundamentals_report": "Fundamentals Analysis",
@@ -189,12 +192,22 @@ class MessageBuffer:
         report_parts = []
 
         # Analyst Team Reports - use .get() to handle missing sections
-        analyst_sections = ["market_report", "sentiment_report", "news_report", "fundamentals_report"]
+        analyst_sections = [
+            "market_report",
+            "chart_report",
+            "sentiment_report",
+            "news_report",
+            "fundamentals_report",
+        ]
         if any(self.report_sections.get(section) for section in analyst_sections):
             report_parts.append("## Analyst Team Reports")
             if self.report_sections.get("market_report"):
                 report_parts.append(
                     f"### Market Analysis\n{self.report_sections['market_report']}"
+                )
+            if self.report_sections.get("chart_report"):
+                report_parts.append(
+                    f"### Chart Analysis\n{self.report_sections['chart_report']}"
                 )
             if self.report_sections.get("sentiment_report"):
                 report_parts.append(
@@ -648,6 +661,10 @@ def save_report_to_disk(final_state, ticker: str, save_path: Path):
         analysts_dir.mkdir(exist_ok=True)
         (analysts_dir / "market.md").write_text(final_state["market_report"], encoding="utf-8")
         analyst_parts.append(("Market Analyst", final_state["market_report"]))
+    if final_state.get("chart_report"):
+        analysts_dir.mkdir(exist_ok=True)
+        (analysts_dir / "chart.md").write_text(final_state["chart_report"], encoding="utf-8")
+        analyst_parts.append(("Chart Analyst", final_state["chart_report"]))
     if final_state.get("sentiment_report"):
         analysts_dir.mkdir(exist_ok=True)
         (analysts_dir / "sentiment.md").write_text(final_state["sentiment_report"], encoding="utf-8")
@@ -735,6 +752,8 @@ def display_complete_report(final_state):
     analysts = []
     if final_state.get("market_report"):
         analysts.append(("Market Analyst", final_state["market_report"]))
+    if final_state.get("chart_report"):
+        analysts.append(("Chart Analyst", final_state["chart_report"]))
     if final_state.get("sentiment_report"):
         analysts.append(("Social Analyst", final_state["sentiment_report"]))
     if final_state.get("news_report"):
@@ -795,15 +814,17 @@ def update_research_team_status(status):
 
 
 # Ordered list of analysts for status transitions
-ANALYST_ORDER = ["market", "social", "news", "fundamentals"]
+ANALYST_ORDER = ["market", "chart", "social", "news", "fundamentals"]
 ANALYST_AGENT_NAMES = {
     "market": "Market Analyst",
+    "chart": "Chart Analyst",
     "social": "Social Analyst",
     "news": "News Analyst",
     "fundamentals": "Fundamentals Analyst",
 }
 ANALYST_REPORT_MAP = {
     "market": "market_report",
+    "chart": "chart_report",
     "social": "sentiment_report",
     "news": "news_report",
     "fundamentals": "fundamentals_report",

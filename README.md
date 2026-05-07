@@ -71,6 +71,7 @@ Our framework decomposes complex trading tasks into specialized roles. This ensu
 - Sentiment Analyst: Analyzes social media and public sentiment using sentiment scoring algorithms to gauge short-term market mood.
 - News Analyst: Monitors global news and macroeconomic indicators, interpreting the impact of events on market conditions.
 - Technical Analyst: Utilizes technical indicators (like MACD and RSI) to detect trading patterns and forecast price movements.
+- Chart Analyst: Reads recent OHLCV chart structure, candlestick behavior, support/resistance, breakouts, volatility, and volume confirmation to produce scenario-based trading levels.
 
 <p align="center">
   <img src="assets/analyst.png" width="100%" style="display: inline-block; margin: 0 2%;">
@@ -194,7 +195,11 @@ To use TradingAgents inside your code, you can import the `tradingagents` module
 from tradingagents.graph.trading_graph import TradingAgentsGraph
 from tradingagents.default_config import DEFAULT_CONFIG
 
-ta = TradingAgentsGraph(debug=True, config=DEFAULT_CONFIG.copy())
+ta = TradingAgentsGraph(
+    selected_analysts=["market", "chart", "social", "news", "fundamentals"],
+    debug=True,
+    config=DEFAULT_CONFIG.copy(),
+)
 
 # forward propagate
 _, decision = ta.propagate("NVDA", "2026-01-15")

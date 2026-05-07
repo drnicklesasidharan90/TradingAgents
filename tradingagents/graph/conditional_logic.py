@@ -19,6 +19,14 @@ class ConditionalLogic:
             return "tools_market"
         return "Msg Clear Market"
 
+    def should_continue_chart(self, state: AgentState):
+        """Determine if chart analysis should continue."""
+        messages = state["messages"]
+        last_message = messages[-1]
+        if last_message.tool_calls:
+            return "tools_chart"
+        return "Msg Clear Chart"
+
     def should_continue_social(self, state: AgentState):
         """Determine if social media analysis should continue."""
         messages = state["messages"]
