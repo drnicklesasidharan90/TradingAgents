@@ -163,6 +163,13 @@ class TradingAgentsGraph:
                     get_indicators,
                 ]
             ),
+            "chart": ToolNode(
+                [
+                    # OHLCV and technical-analysis tools for chart reading
+                    get_stock_data,
+                    get_indicators,
+                ]
+            ),
             "social": ToolNode(
                 [
                     # News tools for social media analysis
@@ -353,6 +360,7 @@ class TradingAgentsGraph:
             "company_of_interest": final_state["company_of_interest"],
             "trade_date": final_state["trade_date"],
             "market_report": final_state["market_report"],
+            "chart_report": final_state.get("chart_report", ""),
             "sentiment_report": final_state["sentiment_report"],
             "news_report": final_state["news_report"],
             "fundamentals_report": final_state["fundamentals_report"],
